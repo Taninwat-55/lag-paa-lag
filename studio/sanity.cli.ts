@@ -7,4 +7,5 @@ export default defineCliConfig({
     dataset,
   },
   studioHost: "lag-paa-lag",
+  deployment: { appId: "ahk7voplgnlfsg1sjkwvjky5" },
 });
