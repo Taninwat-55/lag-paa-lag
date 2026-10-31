@@ -1,6 +1,9 @@
 ---
 import { ink, type Pt } from "../lib/hand";
 import CakeBox from "./CakeBox.astro";
+import type { Settings } from "../lib/sanity";
+interface Props { settings: Settings }
+const { settings } = Astro.props;
 // a line of piping under "before": loose loops, the way a nozzle tests itself
 const loops: Pt[] = Array.from({ length: 60 }, (_, i) => {
   const t = i / 59;
@@ -9,6 +12,7 @@ const loops: Pt[] = Array.from({ length: 60 }, (_, i) => {
 const piping = ink(loops, 7, 0.8);
 ---
 
+{settings.promo?.on && settings.promo.text && <p class="promo">{settings.promo.text}</p>}
 <header class="top">
   <a class="mark" href="/">Lag på Lag</a>
   <nav aria-label="Main">
@@ -24,10 +28,7 @@ const piping = ink(loops, 7, 0.8);
     <span class="w u">before<svg class="pipe" viewBox="0 0 312 34" aria-hidden="true"><path d={piping} pathLength="1" /></svg></span>{" "}
     <span class="w">you</span> <span class="w">order</span> <span class="w">it.</span>
   </h1>
-  <p class="lede">
-    We only bake celebration cakes. Birthdays, christenings, the “we got the flat” cake.
-    Scroll down and watch one get built, layer by layer, with the price adding up as it goes.
-  </p>
+  <p class="lede">{settings.heroLine}</p>
   <div class="art-box"><CakeBox /></div>
   <div class="ctas">
     <a class="btn" href="#byg">Build Sofie’s cake <span aria-hidden="true">↓</span></a>
@@ -36,6 +37,7 @@ const piping = ink(loops, 7, 0.8);
 </section>
 
 <style>
+  .promo { margin: 0; padding: .55rem var(--gutter); background: var(--raspberry-deep); color: #fff; font-weight: 600; text-align: center; }
   .top {
     display: flex; align-items: center; justify-content: space-between; gap: 1rem;
     padding: 1.1rem var(--gutter); background: var(--kraft);

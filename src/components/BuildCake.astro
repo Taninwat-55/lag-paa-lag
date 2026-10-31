@@ -3,7 +3,11 @@
 // adds itself up. Without JS or with reduced motion it is simply the finished
 // cake next to the full receipt.
 import CakeArt from "./CakeArt.astro";
-import { cake, total, kr } from "../data/cake";
+import { kr } from "../data/cake";
+import type { BuildCake } from "../lib/sanity";
+interface Props { cake: BuildCake }
+const { cake } = Astro.props;
+const total = cake.layers.reduce((sum, l) => sum + l.price, 0);
 ---
 
 <section class="build" id="byg" aria-labelledby="byg-title">
@@ -13,7 +17,7 @@ import { cake, total, kr } from "../data/cake";
       <p>Sofie turns eight on Saturday. This is her cake, built in the order we build it.</p>
     </div>
 
-    <div class="art"><CakeArt /></div>
+    <div class="art"><CakeArt piped={cake.piped} /></div>
 
     <div class="receipt" aria-label="Receipt for Sofie’s cake">
       <p class="r-head"><span>Lag på Lag</span><span>Serves {cake.serves}</span></p>

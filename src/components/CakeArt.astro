@@ -3,7 +3,8 @@
 // the receipt) so the script can land each one alone. Without JS the whole
 // cake simply stands there, finished.
 import { ink, arc, line, drum, rng, type Pt } from "../lib/hand";
-import { cake } from "../data/cake";
+interface Props { piped: string }
+const { piped } = Astro.props;
 
 const CX = 300;
 const RY = 34;
@@ -165,7 +166,7 @@ const plate = {
 ---
 
 <svg class="cake-art" viewBox="40 284 520 314" role="img" aria-labelledby="cake-art-title">
-  <title id="cake-art-title">Drawing of {cake.title}: two vanilla sponges with raspberry jam and vanilla cream, under a marzipan lid with raspberries, pistachio, two Danish paper flags and “{cake.piped}” piped on the front.</title>
+  <title id="cake-art-title">Drawing of a birthday cake: two vanilla sponges with raspberry jam and vanilla cream, under a marzipan lid with raspberries, pistachio, two Danish paper flags and “{piped}” piped on the front.</title>
   <defs>
     <clipPath id="mz-clip"><rect class="mz-curtain" x="0" y="300" width="600" height="300" /></clipPath>
     <clipPath id="name-clip"><rect class="name-curtain" x="140" y="420" width="320" height="90" /></clipPath>
@@ -241,7 +242,7 @@ const plate = {
       </g>
     ))}
     <g clip-path="url(#name-clip)">
-      <text class="piped" text-anchor="middle"><textPath href="#name-path" startOffset="50%">{cake.piped}</textPath></text>
+      <text class="piped" text-anchor="middle"><textPath href="#name-path" startOffset="50%">{piped}</textPath></text>
     </g>
   </g>
 </svg>

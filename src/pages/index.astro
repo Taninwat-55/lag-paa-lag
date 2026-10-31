@@ -2,6 +2,9 @@
 import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
 import BuildCake from "../components/BuildCake.astro";
+import { getSettings, getBuildCake } from "../lib/sanity";
+
+const [settings, cake] = await Promise.all([getSettings(), getBuildCake()]);
 ---
 
 <Base
@@ -9,9 +12,9 @@ import BuildCake from "../components/BuildCake.astro";
   description="An invented Copenhagen konditori that only bakes celebration cakes. Watch your cake get built, layer by layer, before you order."
 >
   <a class="skip" href="#main">Skip to content</a>
-  <Hero />
+  <Hero settings={settings} />
   <main id="main">
-    <BuildCake />
+    <BuildCake cake={cake} />
     <section class="next" id="order" aria-labelledby="order-title">
       <h2 id="order-title">Order</h2>
       <p>Prototype: the cakes, the order form and opening hours come in the next build.</p>
