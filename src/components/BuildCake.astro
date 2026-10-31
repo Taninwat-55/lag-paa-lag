@@ -1,0 +1,113 @@
+---
+// "Byg kagen": scroll builds Sofie's cake from the plate up while the receipt
+// adds itself up. Without JS or with reduced motion it is simply the finished
+// cake next to the full receipt.
+import CakeArt from "./CakeArt.astro";
+import { cake, total, kr } from "../data/cake";
+---
+
+<section class="build" id="byg" aria-labelledby="byg-title">
+  <div class="stage">
+    <div class="intro">
+      <h2 id="byg-title">Byg kagen</h2>
+      <p>Sofie turns eight on Saturday. This is her cake, built in the order we build it.</p>
+    </div>
+
+    <div class="art"><CakeArt /></div>
+
+    <div class="receipt" aria-label="Receipt for Sofie’s cake">
+      <p class="r-head"><span>Lag på Lag</span><span>Serves {cake.serves}</span></p>
+      <ol class="lines">
+        {cake.layers.map(l => (
+          <li data-layer={l.id} data-price={l.price}>
+            <span class="what">{l.name} <i lang="da">{l.dansk}</i></span>
+            <span class="price">{kr(l.price)}</span>
+          </li>
+        ))}
+      </ol>
+      <p class="sum"><span>Total</span><span class="total" data-total={total}>{kr(total)}</span></p>
+      <div class="end">
+        <p>Ready {cake.noticeDays} days after you order. Collect it in the shop.</p>
+        <a class="btn" href="#order">Order this cake</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initBuild } from "../lib/build";
+  const start = () => initBuild(document.querySelector<HTMLElement>(".build"));
+  // GSAP comes from the CDN with defer; if it is late (or blocked) the page just stays finished
+  if ((window as any).gsap) start(); else addEventListener("load", start, { once: true });
+</script>
+
+<style>
+  .build { padding: clamp(3rem, 7vw, 5rem) var(--gutter); }
+  .stage {
+    max-width: 76rem; margin: 0 auto;
+    display: grid; gap: clamp(1rem, 3vw, 3rem) clamp(2rem, 5vw, 5rem);
+    grid-template-columns: minmax(0, 1.45fr) minmax(17rem, 1fr);
+    grid-template-areas: "intro receipt" "art receipt";
+    align-items: center;
+  }
+  .intro { grid-area: intro; align-self: end; }
+  h2 { font-size: clamp(2.6rem, 7vw, 5.5rem); }
+  .intro p { margin-top: .6rem; max-width: 36rem; font-size: 1.1rem; }
+  .art { grid-area: art; }
+
+  .receipt {
+    grid-area: receipt; position: relative;
+    background: #fffdf7; padding: 1.3rem 1.4rem 1.8rem;
+    border: 2px solid var(--ink); border-bottom: 0;
+    transform: rotate(1.2deg);
+    box-shadow: 4px 5px 0 rgba(59, 35, 22, .14);
+    font-variant-numeric: tabular-nums;
+    /* torn-off bottom edge */
+    --tear: 10px;
+    mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / calc(var(--tear) * 2) 100%;
+  }
+  .r-head {
+    display: flex; justify-content: space-between; gap: 1rem;
+    font-size: .85rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+    padding-bottom: .7rem; border-bottom: 2px dashed var(--ink-soft);
+  }
+  .lines { list-style: none; margin: 0; padding: .4rem 0; }
+  .lines li {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+    padding: .3rem 0 .3rem 1rem; position: relative;
+  }
+  .lines li::before {
+    content: ""; position: absolute; left: 0; top: .85em; width: .45rem; height: .45rem; border-radius: 50%;
+    background: var(--raspberry); opacity: 0; transition: opacity .2s;
+  }
+  .lines li.now::before { opacity: 1; }
+  .what { font-weight: 600; }
+  .what i { display: block; font-weight: 400; color: var(--ink-soft); font-size: .88rem; }
+  .price { white-space: nowrap; }
+  .sum {
+    display: flex; justify-content: space-between; padding-top: .7rem; border-top: 2px dashed var(--ink-soft);
+    font: 1.6rem/1.1 var(--display);
+  }
+  .end { margin-top: 1.1rem; display: grid; gap: .9rem; justify-items: start; }
+
+  @media (max-width: 760px) {
+    .stage { grid-template-columns: 1fr; grid-template-areas: "intro" "art" "receipt"; gap: 1rem; }
+    .receipt { transform: rotate(.6deg); padding: 1rem 1.1rem 1.5rem; }
+  }
+
+  /* pinned version (JS + motion allowed): fit the whole scene in one screen */
+  :global(.motion) .build { padding-block: 0; }
+  :global(.motion) .stage { min-height: 100svh; padding-block: clamp(1rem, 4vh, 3rem); align-content: center; }
+  :global(.motion) .art { align-self: start; }
+  :global(.motion) .art :global(.cake-art) { max-height: 56svh; margin-inline: auto; }
+  @media (max-width: 760px) {
+    :global(.motion) .stage { gap: .5rem; }
+    :global(.motion) h2 { font-size: 2.3rem; }
+    :global(.motion) .intro p { font-size: .95rem; }
+    :global(.motion) .art :global(.cake-art) { max-height: 30svh; }
+    :global(.motion) .lines li { padding-block: .14rem; font-size: .92rem; }
+    :global(.motion) .what i { display: none; }
+    :global(.motion) .sum { font-size: 1.3rem; }
+    :global(.motion) .end p { display: none; }
+  }
+</style>

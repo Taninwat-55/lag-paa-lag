@@ -1,16 +1,32 @@
 ---
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import BuildCake from "../components/BuildCake.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Base
+  title="Lag på Lag · Celebration cakes on Amagerbrogade"
+  description="An invented Copenhagen konditori that only bakes celebration cakes. Watch your cake get built, layer by layer, before you order."
+>
+  <a class="skip" href="#main">Skip to content</a>
+  <Hero />
+  <main id="main">
+    <BuildCake />
+    <section class="next" id="order" aria-labelledby="order-title">
+      <h2 id="order-title">Order</h2>
+      <p>Prototype: the cakes, the order form and opening hours come in the next build.</p>
+    </section>
+  </main>
+  <footer class="foot">
+    <p><strong>Lag på Lag is invented.</strong> A design sample by Ice’s Stack. No cakes are sold here, and Sofie is made up too.</p>
+  </footer>
+
+  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+</Base>
+
+<style>
+  .next { padding: clamp(3rem, 8vw, 6rem) var(--gutter); border-top: 2.5px solid var(--ink); background: var(--kraft-soft); }
+  .next h2 { font-size: clamp(2.4rem, 6vw, 4.5rem); margin-bottom: .8rem; }
+  .foot { padding: 2rem var(--gutter); background: var(--ink); color: var(--paper); font-size: .95rem; }
+</style>
