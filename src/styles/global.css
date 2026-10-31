@@ -23,8 +23,8 @@ body {
   font: 400 1.0625rem/1.55 var(--text);
   overflow-x: clip;
 }
-h1, h2, h3 { font-family: var(--display); font-weight: 400; line-height: 1; margin: 0; }
-p { margin: 0; }
+h1, h2, h3 { font-family: var(--display); font-weight: 400; line-height: 1; margin: 0; text-wrap: balance; }
+p { margin: 0; text-wrap: pretty; } /* no one-word last lines */
 a { color: inherit; }
 :focus-visible { outline: 3px solid var(--raspberry); outline-offset: 3px; border-radius: 4px; }
 
