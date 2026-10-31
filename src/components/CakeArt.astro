@@ -228,7 +228,8 @@ const plate = {
 
   <g class="layer" data-layer="berries">
     {crumbs.map(d => <path class="f-pistachio" d={d} />)}
-    {berries.map(b => <use class="berry" href="#berry" transform={`translate(${b.x.toFixed(1)} ${b.y.toFixed(1)}) rotate(${b.rot}) scale(${b.k.toFixed(2)})`} />)}
+    {/* the script animates the outer <g>; GSAP rewriting the <use>'s own transform loses its placement */}
+    {berries.map(b => <g class="berry"><use href="#berry" transform={`translate(${b.x.toFixed(1)} ${b.y.toFixed(1)}) rotate(${b.rot}) scale(${b.k.toFixed(2)})`} /></g>)}
   </g>
 
   <g class="layer" data-layer="name">
