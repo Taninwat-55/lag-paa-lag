@@ -17,7 +17,8 @@ export type Cake = { name: string; line?: string; sizes: { serves: number; price
 const connected = projectId !== "PENDING";
 
 async function query<T>(groq: string): Promise<T> {
-  const url = `https://${projectId}.apicdn.sanity.io/${API}/data/query/${dataset}?query=${encodeURIComponent(groq)}`;
+  // the live API, not the CDN: a rebuild right after Publish must see the new version
+  const url = `https://${projectId}.api.sanity.io/${API}/data/query/${dataset}?query=${encodeURIComponent(groq)}`;
   const res = await fetch(url);
   // fail the build rather than ship old prices quietly
   if (!res.ok) throw new Error(`Sanity ${res.status} for ${groq}`);
