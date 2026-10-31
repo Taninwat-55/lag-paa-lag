@@ -19,6 +19,18 @@ export const siteSettings = defineType({
       ],
     }),
     defineField({
+      name: "closedDays", title: "Closed days", type: "array", of: [{ type: "string" }],
+      description: "The order form won’t let anyone collect a cake on these days.",
+      options: {
+        layout: "grid",
+        list: [
+          { title: "Monday", value: "1" }, { title: "Tuesday", value: "2" }, { title: "Wednesday", value: "3" },
+          { title: "Thursday", value: "4" }, { title: "Friday", value: "5" }, { title: "Saturday", value: "6" },
+          { title: "Sunday", value: "0" },
+        ],
+      },
+    }),
+    defineField({
       name: "hours", title: "Opening hours", type: "array",
       of: [{
         type: "object", name: "row",

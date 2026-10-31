@@ -13,6 +13,7 @@ const docs = [
   {
     _id: "siteSettings", _type: "siteSettings",
     heroLine: "We only bake celebration cakes: birthdays, christenings, the “we got the flat” cake. Scroll down to watch one being built, layer by layer, with the price adding up as it goes.",
+    closedDays: ["0", "1"],
     promo: { on: false, text: "Closed 24 to 26 December. Order Christmas cakes by the 20th." },
     hours: [
       { _key: "h1", days: "Tue to Fri", time: "8 to 17" },
@@ -21,7 +22,7 @@ const docs = [
     ],
   },
   {
-    _id: "buildCake", _type: "buildCake", piped: "Tillykke Sofie", serves: 12, noticeDays: 3,
+    _id: "buildCake", _type: "buildCake", cake: { _type: "reference", _ref: "cake-1" }, piped: "Tillykke Sofie", serves: 12, noticeDays: 3,
     ...Object.fromEntries(L.map(([id, name, dansk, note, price]) => [id, { name, dansk, note, price }])),
   },
   ...[

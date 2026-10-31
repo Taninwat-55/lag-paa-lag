@@ -8,6 +8,8 @@ import Visit from "../components/Visit.astro";
 import { getSettings, getBuildCake, getCakes } from "../lib/sanity";
 
 const [settings, cake, cakes] = await Promise.all([getSettings(), getBuildCake(), getCakes()]);
+// by identity, not position: the owner can reorder or hide cakes (-1 hides the button)
+const orderIndex = cakes.findIndex(c => c._id === cake.cakeId);
 ---
 
 <Base
@@ -17,9 +19,9 @@ const [settings, cake, cakes] = await Promise.all([getSettings(), getBuildCake()
   <a class="skip" href="#main">Skip to content</a>
   <Hero settings={settings} />
   <main id="main">
-    <BuildCake cake={cake} />
+    <BuildCake cake={cake} orderIndex={orderIndex} />
     <Cakes cakes={cakes} />
-    <Order cakes={cakes} build={cake} />
+    <Order cakes={cakes} build={cake} closedDays={settings.closedDays} />
     <Visit hours={settings.hours} />
   </main>
   <footer class="foot">

@@ -30,6 +30,11 @@ export const buildCake = defineType({
   type: "document",
   fields: [
     defineField({ name: "piped", title: "Name piped on the cake", type: "string", description: "Keep it short so it fits the drawing.", validation: r => r.required().max(16) }),
+    defineField({
+      name: "cake", title: "Cake this builds", type: "reference", to: [{ type: "cake" }],
+      description: "Which cake “Order this cake” fills in on the order form.",
+      validation: r => r.required(),
+    }),
     defineField({ name: "serves", title: "Serves", type: "number", validation: r => r.required().min(1).integer() }),
     defineField({ name: "noticeDays", title: "Days of notice", type: "number", validation: r => r.required().min(1).integer() }),
     ...LAYERS.map(([n, t]) => layerField(n, t)),

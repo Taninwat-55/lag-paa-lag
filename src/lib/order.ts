@@ -15,18 +15,26 @@ export function initOrder(section: HTMLElement | null) {
   const done = section.querySelector<HTMLElement>(".done")!;
   const cakes: Cake[] = JSON.parse(form.dataset.cakes ?? "[]");
   const notice = Number(form.dataset.notice ?? 3);
+  const closed: number[] = JSON.parse(form.dataset.closed ?? "[]");
+  const dayOf = (s: string) => new Date(`${s}T12:00`).getDay();
+  // "Sundays and Mondays", named by the browser. 1 November 2026 is a Sunday, so 1 + d is weekday d
+  const closedNames = closed.map(d => new Date(2026, 10, 1 + d).toLocaleDateString("en-GB", { weekday: "long" }) + "s");
+  const closedText = closedNames.length > 1 ? `${closedNames.slice(0, -1).join(", ")} and ${closedNames.at(-1)}` : closedNames[0] ?? "";
   const $ = <T extends HTMLElement>(id: string) => section.querySelector<T>(`#${id}`)!;
   const cake = $<HTMLSelectElement>("f-cake"), size = $<HTMLSelectElement>("f-size");
   const piped = $<HTMLInputElement>("f-piped"), date = $<HTMLInputElement>("f-date");
   const name = $<HTMLInputElement>("f-name"), contact = $<HTMLInputElement>("f-contact");
 
   // the earliest day is counted from today in the visitor's browser, not from the build
+  // and moved on past any closed day
   const earliest = new Date();
   earliest.setDate(earliest.getDate() + notice);
+  for (let i = 0; i < 7 && closed.includes(earliest.getDay()); i++) earliest.setDate(earliest.getDate() + 1);
   date.min = iso(earliest);
 
   const fillSizes = (pick?: number) => {
-    const c = cakes[Number(cake.value)];
+    // Number("") is 0, so the empty choice must be caught before converting
+    const c = cake.value === "" ? undefined : cakes[Number(cake.value)];
     size.replaceChildren(new Option(c ? "Choose a size" : "Choose a cake first", ""));
     c?.sizes.forEach(s => size.add(new Option(`Serves ${s.serves} · ${fmt.format(s.price)} kr.`, String(s.serves))));
     if (pick && c?.sizes.some(s => s.serves === pick)) size.value = String(pick);
@@ -40,6 +48,8 @@ export function initOrder(section: HTMLElement | null) {
       fillSizes(Number(b.dataset.orderServes) || undefined);
       if (b.dataset.orderPiped !== undefined) piped.value = b.dataset.orderPiped;
       show(form);
+      // setting .value fires no events, so clear errors the prefill just fixed
+      if (section.querySelector('[aria-invalid="true"]')) check();
     }),
   );
 
@@ -59,7 +69,8 @@ export function initOrder(section: HTMLElement | null) {
       err(size, size.value ? "" : "Choose how many people it should serve."),
       err(piped, piped.value.trim().length > 16 ? "Keep the name to 16 letters so it fits on the cake." : ""),
       err(date, !date.value ? "Choose the day you’ll collect it."
-        : date.value < date.min ? `We need ${notice} days. The earliest is ${longDate(date.min)}.` : ""),
+        : date.value < date.min ? `We need ${notice} days. The earliest is ${longDate(date.min)}.`
+        : closed.includes(dayOf(date.value)) ? `We’re closed on ${closedText}. Choose another day.` : ""),
       err(name, name.value.trim() ? "" : "Tell us your name so we know whose cake it is."),
       err(contact, !c ? "Add a phone number or an email."
         : email || phone ? "" : "That doesn’t look like a phone number (8 digits) or an email address."),

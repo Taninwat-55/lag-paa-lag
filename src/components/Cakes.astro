@@ -24,7 +24,7 @@ const { cakes } = Astro.props;
               ))}
             </tbody>
           </table>
-          <a class="btn quiet" href="#order" data-order-cake={i}>Order this one</a>
+          <a class="btn quiet" href="#order" data-order-cake={i}>Order this one<span class="sr">: {c.name}</span></a>
         </li>
       ))}
     </ul>
@@ -51,5 +51,4 @@ const { cakes } = Astro.props;
   th { font-weight: 400; }
   td { text-align: right; font-weight: 600; }
   .card .btn { align-self: flex-start; }
-  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 </style>

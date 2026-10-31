@@ -3,8 +3,8 @@
 // business is invented. Fields have no `name`, so even the no-JS fallback
 // (a plain GET to /order-sent/) carries no personal data in the URL.
 import type { Cake, BuildCake } from "../lib/sanity";
-interface Props { cakes: Cake[]; build: BuildCake }
-const { cakes, build } = Astro.props;
+interface Props { cakes: Cake[]; build: BuildCake; closedDays: number[] }
+const { cakes, build, closedDays } = Astro.props;
 const notice = build.noticeDays;
 ---
 
@@ -19,7 +19,7 @@ const notice = build.noticeDays;
     </ol>
 
     <form class="form" action="/order-sent/" method="get" novalidate
-      data-cakes={JSON.stringify(cakes)} data-notice={notice}
+      data-cakes={JSON.stringify(cakes)} data-notice={notice} data-closed={JSON.stringify(closedDays)}
       data-piped={build.piped} data-serves={build.serves}>
       <p class="invented"><strong>This bakery is invented.</strong> The form works, but nothing is sent anywhere.</p>
 
@@ -50,7 +50,7 @@ const notice = build.noticeDays;
         <div class="field">
           <label for="f-date">Collection day</label>
           <input id="f-date" type="date" required aria-describedby="h-date e-date" />
-          <p class="hint" id="h-date">At least {notice} days from today.</p>
+          <p class="hint" id="h-date">At least {notice} days from today, on a day we’re open.</p>
           <p class="err" id="e-date"></p>
         </div>
 
@@ -62,7 +62,7 @@ const notice = build.noticeDays;
 
         <div class="field wide">
           <label for="f-contact">Phone or email</label>
-          <input id="f-contact" type="text" required autocomplete="email" inputmode="email" aria-describedby="h-contact e-contact" />
+          <input id="f-contact" type="text" required aria-describedby="h-contact e-contact" />
           <p class="hint" id="h-contact">We’ll tell you when it’s ready.</p>
           <p class="err" id="e-contact"></p>
         </div>
