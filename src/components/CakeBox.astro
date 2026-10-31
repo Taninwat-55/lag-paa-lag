@@ -1,0 +1,63 @@
+---
+// A kraft cake box tied with red-and-white baker's twine: the hero's drawing.
+// It promises the cake without showing it, so the reveal stays in Byg kagen.
+import { ink, line, arc, type Pt } from "../lib/hand";
+
+// front face, side face and lid, in a simple oblique view
+const F = { l: 60, r: 270, t: 160, b: 330 };
+const D: Pt = [96, -62]; // depth: how far back the box goes
+const up = ([x, y]: Pt): Pt => [x + D[0], y + D[1]];
+const poly = (pts: Pt[], n = 5) => pts.flatMap((p, i) => line(p, pts[(i + 1) % pts.length], n).slice(0, -1));
+
+const fl: Pt = [F.l, F.t], fr: Pt = [F.r, F.t], br: Pt = [F.r, F.b], bl: Pt = [F.l, F.b];
+const front = ink(poly([fl, fr, br, bl]), 201, 1.2, true);
+const side = ink(poly([fr, up(fr), up(br), br]), 202, 1.2, true);
+const top = ink(poly([fl, up(fl), up(fr), fr]), 203, 1.2, true);
+// the lid's lip runs round the front and side
+const lip = ink([...line([F.l, F.t + 30], [F.r, F.t + 30], 8), ...line([F.r, F.t + 30], up([F.r, F.t + 30]), 4).slice(1)], 204, 0.8);
+
+// twine: across the lid both ways, down the front and the side
+const mid = (a: Pt, b: Pt): Pt => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+const knot = mid(mid(fl, up(fr)), mid(fr, up(fl)));
+const fMid = mid(fl, fr), sMid = mid(fr, up(fr));
+const twine = [
+  ink([...line([fMid[0], F.b], fMid, 6), ...line(fMid, up(fMid), 5).slice(1)], 211, 0.7),
+  ink([...line(mid(fl, up(fl)), sMid, 8), ...line(sMid, [sMid[0], sMid[1] + (F.b - F.t)], 6).slice(1)], 212, 0.7),
+];
+// the bow: two loops and two tails from the knot
+const [kx, ky] = knot;
+const bow = [
+  ink(arc(kx - 22, ky - 12, 24, 17, -0.3, Math.PI * 2 - 0.5, 18), 221, 0.9),
+  ink(arc(kx + 22, ky - 12, 24, 17, Math.PI + 0.3, Math.PI * 3 - 0.5, 18), 222, 0.9),
+  ink([[kx - 2, ky], [kx - 14, ky + 18], [kx - 30, ky + 34]], 223, 0.8),
+  ink([[kx + 2, ky], [kx + 18, ky + 16], [kx + 26, ky + 40]], 224, 0.8),
+];
+const label = ink(arc(F.l + 50, F.t + 96, 38, 24, 0, Math.PI * 2, 24), 231, 0.6, true);
+---
+
+<svg class="box" viewBox="40 60 340 290" aria-hidden="true">
+  <path class="b-side" d={side} />
+  <path class="b-top" d={top} />
+  <path class="b-front" d={front} />
+  <path class="b-ink thin" d={lip} />
+  {twine.map(d => <><path class="tw-w" d={d} /><path class="tw-r" d={d} /></>)}
+  <path class="b-label" d={label} />
+  <text class="b-name" x={F.l + 50} y={F.t + 101} text-anchor="middle">Lag på Lag</text>
+  {bow.map(d => <><path class="tw-w" d={d} /><path class="tw-r" d={d} /></>)}
+  <circle class="b-knot" cx={kx.toFixed(1)} cy={ky.toFixed(1)} r="5" />
+</svg>
+
+<style>
+  .box { display: block; width: 100%; height: auto; overflow: visible; }
+  .box path { stroke-linecap: round; stroke-linejoin: round; }
+  .b-front, .b-side, .b-top { stroke: var(--ink); stroke-width: 2.6; }
+  .b-front { fill: #d8b27c; }
+  .b-side { fill: #b98f59; }
+  .b-top { fill: #e2c08f; }
+  .b-ink { fill: none; stroke: var(--ink); stroke-width: 1.6; }
+  .tw-w { fill: none; stroke: #fffaf0; stroke-width: 4.5; }
+  .tw-r { fill: none; stroke: #c8102e; stroke-width: 4.5; stroke-dasharray: 5 5; }
+  .b-label { fill: #fffaf0; stroke: var(--ink); stroke-width: 1.8; }
+  .b-name { font: 12.5px var(--display); fill: var(--ink); }
+  .b-knot { fill: #c8102e; stroke: var(--ink); stroke-width: 1.4; }
+</style>

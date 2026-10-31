@@ -1,5 +1,6 @@
 ---
 import { ink, type Pt } from "../lib/hand";
+import CakeBox from "./CakeBox.astro";
 // a line of piping under "before": loose loops, the way a nozzle tests itself
 const loops: Pt[] = Array.from({ length: 60 }, (_, i) => {
   const t = i / 59;
@@ -27,6 +28,7 @@ const piping = ink(loops, 7, 0.8);
     We only bake celebration cakes. Birthdays, christenings, the “we got the flat” cake.
     Scroll down and watch one get built, layer by layer, with the price adding up as it goes.
   </p>
+  <div class="art-box"><CakeBox /></div>
   <div class="ctas">
     <a class="btn" href="#byg">Build Sofie’s cake <span aria-hidden="true">↓</span></a>
     <a class="btn quiet" href="#order">Order a cake</a>
@@ -44,6 +46,7 @@ const piping = ink(loops, 7, 0.8);
   nav a:hover { border-color: currentColor; }
 
   .hero {
+    position: relative; overflow: hidden;
     background: var(--kraft);
     padding: clamp(1.5rem, 5vw, 3.5rem) var(--gutter) clamp(3rem, 7vw, 5.5rem);
     border-bottom: 2.5px solid var(--ink);
@@ -59,6 +62,13 @@ const piping = ink(loops, 7, 0.8);
   .pipe path { fill: none; stroke: var(--raspberry-deep); stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; }
   .lede { max-width: 34rem; font-size: clamp(1.08rem, 1.6vw, 1.25rem); margin-top: clamp(1.6rem, 3vw, 2.4rem); }
   .ctas { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 2rem; }
+  .art-box { display: none; }
+  @media (min-width: 1000px) {
+    .art-box {
+      display: block; position: absolute; right: clamp(1rem, 5vw, 6rem); bottom: clamp(2rem, 6vw, 5rem);
+      width: min(34vw, 30rem); transform: rotate(-4deg);
+    }
+  }
 
   /* the entrance is CSS only: words rise, then the piping draws itself */
   @media (prefers-reduced-motion: no-preference) {
@@ -67,8 +77,10 @@ const piping = ink(loops, 7, 0.8);
     .w:nth-child(4) { animation-delay: .18s } .w:nth-child(5) { animation-delay: .24s }
     .w:nth-child(6) { animation-delay: .30s } .w:nth-child(7) { animation-delay: .36s }
     .pipe path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: pipe 1.1s .75s ease-out forwards; }
+    .art-box { animation: drop .8s .35s cubic-bezier(.3, 1.4, .5, 1) both; }
     .lede, .ctas { animation: rise .7s .5s cubic-bezier(.2, .8, .2, 1) both; }
   }
   @keyframes rise { from { opacity: 0; transform: translateY(.35em); } }
+  @keyframes drop { from { opacity: 0; translate: 0 -2.5rem; } }
   @keyframes pipe { to { stroke-dashoffset: 0; } }
 </style>
