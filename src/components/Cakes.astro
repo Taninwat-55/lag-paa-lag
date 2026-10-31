@@ -1,0 +1,55 @@
+---
+// The cakes, straight from Sanity: name, one line, sizes with prices.
+// "Order this one" fills in the form below (order.ts reads the data-* attributes).
+import { kr } from "../data/cake";
+import type { Cake } from "../lib/sanity";
+interface Props { cakes: Cake[] }
+const { cakes } = Astro.props;
+---
+
+<section class="cakes" id="cakes" aria-labelledby="cakes-title">
+  <div class="wrap">
+    <h2 id="cakes-title">The cakes</h2>
+    <p class="sub">Every cake is made to order. Prices are for the whole cake.</p>
+    <ul class="list">
+      {cakes.map((c, i) => (
+        <li class="card">
+          <h3>{c.name}</h3>
+          {c.line && <p class="line">{c.line}</p>}
+          <table>
+            <caption class="sr">Sizes and prices for {c.name}</caption>
+            <tbody>
+              {c.sizes.map(s => (
+                <tr><th scope="row">Serves {s.serves}</th><td>{kr(s.price)}</td></tr>
+              ))}
+            </tbody>
+          </table>
+          <a class="btn quiet" href="#order" data-order-cake={i}>Order this one</a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .cakes { padding: clamp(3.5rem, 8vw, 6rem) var(--gutter); background: var(--kraft-soft); border-top: 2.5px solid var(--ink); }
+  .wrap { max-width: 76rem; margin: 0 auto; }
+  h2 { font-size: clamp(2.6rem, 7vw, 5rem); }
+  .sub { margin-top: .6rem; font-size: 1.1rem; }
+  .list { list-style: none; padding: 0; margin: clamp(2rem, 4vw, 3rem) 0 0; display: grid; gap: 1.4rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); }
+  .card {
+    display: flex; flex-direction: column; gap: .9rem;
+    background: #fffdf7; border: 2px solid var(--ink); border-radius: 14px; padding: 1.5rem;
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .card:nth-child(2) { transform: rotate(-.6deg); }
+  .card:nth-child(3) { transform: rotate(.5deg); }
+  h3 { font-size: 1.75rem; line-height: 1.05; }
+  .line { color: var(--ink-soft); }
+  table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; margin-top: auto; }
+  th, td { padding: .45rem 0; border-top: 2px dashed var(--kraft); text-align: left; }
+  th { font-weight: 400; }
+  td { text-align: right; font-weight: 600; }
+  .card .btn { align-self: flex-start; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+</style>

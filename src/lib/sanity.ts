@@ -50,4 +50,4 @@ export async function getCakes(): Promise<Cake[]> {
 }
 
 export const LOCAL_HERO =
-  "We only bake celebration cakes. Birthdays, christenings, the “we got the flat” cake. Scroll down and watch one get built, layer by layer, with the price adding up as it goes.";
+  "We only bake celebration cakes: birthdays, christenings, the “we got the flat” cake. Scroll down to watch one being built, layer by layer, with the price adding up as it goes.";

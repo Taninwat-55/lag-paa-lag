@@ -2,9 +2,12 @@
 import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
 import BuildCake from "../components/BuildCake.astro";
-import { getSettings, getBuildCake } from "../lib/sanity";
+import Cakes from "../components/Cakes.astro";
+import Order from "../components/Order.astro";
+import Visit from "../components/Visit.astro";
+import { getSettings, getBuildCake, getCakes } from "../lib/sanity";
 
-const [settings, cake] = await Promise.all([getSettings(), getBuildCake()]);
+const [settings, cake, cakes] = await Promise.all([getSettings(), getBuildCake(), getCakes()]);
 ---
 
 <Base
@@ -15,13 +18,12 @@ const [settings, cake] = await Promise.all([getSettings(), getBuildCake()]);
   <Hero settings={settings} />
   <main id="main">
     <BuildCake cake={cake} />
-    <section class="next" id="order" aria-labelledby="order-title">
-      <h2 id="order-title">Order</h2>
-      <p>Prototype: the cakes, the order form and opening hours come in the next build.</p>
-    </section>
+    <Cakes cakes={cakes} />
+    <Order cakes={cakes} build={cake} />
+    <Visit hours={settings.hours} />
   </main>
   <footer class="foot">
-    <p><strong>Lag på Lag is invented.</strong> A design sample by Ice’s Stack. No cakes are sold here, and Sofie is made up too.</p>
+    <p><strong>Lag på Lag is invented.</strong> Ice’s Stack made it as a design sample. Nobody sells cakes here, and Sofie is made up too.</p>
   </footer>
 
   <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
@@ -29,7 +31,5 @@ const [settings, cake] = await Promise.all([getSettings(), getBuildCake()]);
 </Base>
 
 <style>
-  .next { padding: clamp(3rem, 8vw, 6rem) var(--gutter); border-top: 2.5px solid var(--ink); background: var(--kraft-soft); }
-  .next h2 { font-size: clamp(2.4rem, 6vw, 4.5rem); margin-bottom: .8rem; }
   .foot { padding: 2rem var(--gutter); background: var(--ink); color: var(--paper); font-size: .95rem; }
 </style>

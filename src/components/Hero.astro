@@ -17,16 +17,19 @@ const piping = ink(loops, 7, 0.8);
   <a class="mark" href="/">Lag på Lag</a>
   <nav aria-label="Main">
     <a href="#byg">Build a cake</a>
+    <a href="#cakes">Cakes</a>
     <a href="#order">Order</a>
+    <a href="#visit">Visit</a>
   </nav>
 </header>
 
 <section class="hero" aria-labelledby="hero-title">
   <p class="eyebrow">Konditori · Amagerbrogade, Copenhagen</p>
   <h1 id="hero-title">
-    <span class="w">See</span> <span class="w">the</span> <span class="w">cake</span>
+    {/* explicit spaces: Astro drops the line breaks between these spans */}
+    <span class="w">See</span>{" "}<span class="w">the</span>{" "}<span class="w">cake</span>{" "}
     <span class="w u">before<svg class="pipe" viewBox="0 0 312 34" aria-hidden="true"><path d={piping} pathLength="1" /></svg></span>{" "}
-    <span class="w">you</span> <span class="w">order</span> <span class="w">it.</span>
+    <span class="w">you</span>{" "}<span class="w">order</span>{" "}<span class="w">it.</span>
   </h1>
   <p class="lede">{settings.heroLine}</p>
   <div class="art-box"><CakeBox /></div>
@@ -42,9 +45,13 @@ const piping = ink(loops, 7, 0.8);
     display: flex; align-items: center; justify-content: space-between; gap: 1rem;
     padding: 1.1rem var(--gutter); background: var(--kraft);
   }
-  .mark { font: 1.5rem/1 var(--display); text-decoration: none; }
+  .mark { font: 1.5rem/1 var(--display); text-decoration: none; white-space: nowrap; }
   nav { display: flex; gap: clamp(.9rem, 3vw, 2rem); font-weight: 600; }
-  nav a { text-decoration: none; padding: .3rem 0; border-bottom: 2px solid transparent; }
+  nav a { text-decoration: none; padding: .3rem 0; border-bottom: 2px solid transparent; white-space: nowrap; }
+  @media (max-width: 600px) {
+    .top { flex-wrap: wrap; row-gap: .6rem; }
+    nav { width: 100%; justify-content: space-between; }
+  }
   nav a:hover { border-color: currentColor; }
 
   .hero {

@@ -32,7 +32,7 @@ const total = cake.layers.reduce((sum, l) => sum + l.price, 0);
       <p class="sum"><span>Total</span><span class="total" data-total={total}>{kr(total)}</span></p>
       <div class="end">
         <p>Ready {cake.noticeDays} days after you order. Collect it in the shop.</p>
-        <a class="btn" href="#order">Order this cake</a>
+        <a class="btn" href="#order" data-order-cake="0" data-order-serves={cake.serves} data-order-piped={cake.piped}>Order this cake</a>
       </div>
     </div>
   </div>

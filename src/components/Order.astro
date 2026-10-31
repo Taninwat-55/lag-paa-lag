@@ -1,0 +1,129 @@
+---
+// How ordering works, then the form. The form works but sends nothing: the
+// business is invented. Fields have no `name`, so even the no-JS fallback
+// (a plain GET to /order-sent/) carries no personal data in the URL.
+import type { Cake, BuildCake } from "../lib/sanity";
+interface Props { cakes: Cake[]; build: BuildCake }
+const { cakes, build } = Astro.props;
+const notice = build.noticeDays;
+---
+
+<section class="order" id="order" aria-labelledby="order-title">
+  <div class="wrap">
+    <h2 id="order-title">Order</h2>
+
+    <ol class="steps">
+      <li><span class="n" aria-hidden="true">1</span><p><strong>Pick a cake and a size.</strong> If you came from Sofie’s cake, it’s already filled in.</p></li>
+      <li><span class="n" aria-hidden="true">2</span><p><strong>Order {notice} days ahead.</strong> Every cake is baked for its day, so we need the time.</p></li>
+      <li><span class="n" aria-hidden="true">3</span><p><strong>Collect it on Amagerbrogade.</strong> We box and tie it so it’s easy to carry. You pay when you collect.</p></li>
+    </ol>
+
+    <form class="form" action="/order-sent/" method="get" novalidate
+      data-cakes={JSON.stringify(cakes)} data-notice={notice}
+      data-piped={build.piped} data-serves={build.serves}>
+      <p class="invented"><strong>This bakery is invented.</strong> The form works, but nothing is sent anywhere.</p>
+
+      <div class="grid">
+        <div class="field">
+          <label for="f-cake">Cake</label>
+          <select id="f-cake" required aria-describedby="e-cake">
+            <option value="">Choose a cake</option>
+            {cakes.map((c, i) => <option value={i}>{c.name}</option>)}
+          </select>
+          <p class="err" id="e-cake"></p>
+        </div>
+
+        <div class="field">
+          <label for="f-size">Size</label>
+          <select id="f-size" required aria-describedby="e-size">
+            <option value="">Choose a cake first</option>
+          </select>
+          <p class="err" id="e-size"></p>
+        </div>
+
+        <div class="field wide">
+          <label for="f-piped">Name to pipe on the cake <span class="opt">optional, up to 16 letters</span></label>
+          <input id="f-piped" type="text" maxlength="16" autocomplete="off" aria-describedby="e-piped" />
+          <p class="err" id="e-piped"></p>
+        </div>
+
+        <div class="field">
+          <label for="f-date">Collection day</label>
+          <input id="f-date" type="date" required aria-describedby="h-date e-date" />
+          <p class="hint" id="h-date">At least {notice} days from today.</p>
+          <p class="err" id="e-date"></p>
+        </div>
+
+        <div class="field">
+          <label for="f-name">Your name</label>
+          <input id="f-name" type="text" required autocomplete="name" aria-describedby="e-name" />
+          <p class="err" id="e-name"></p>
+        </div>
+
+        <div class="field wide">
+          <label for="f-contact">Phone or email</label>
+          <input id="f-contact" type="text" required autocomplete="email" inputmode="email" aria-describedby="h-contact e-contact" />
+          <p class="hint" id="h-contact">We’ll tell you when it’s ready.</p>
+          <p class="err" id="e-contact"></p>
+        </div>
+      </div>
+
+      <button class="btn" type="submit">Place the order</button>
+    </form>
+
+    <div class="done" hidden tabindex="-1">
+      <h3>Thank you, <span data-done="name"></span>.</h3>
+      <p>Had Lag på Lag been real, this is what you ordered:</p>
+      <ul class="summary">
+        <li><span data-done="cake"></span>, serves <span data-done="serves"></span></li>
+        <li data-done-row="piped">Piped on top: “<span data-done="piped"></span>”</li>
+        <li>Collect on <span data-done="date"></span></li>
+        <li>Pay on collection: <strong data-done="price"></strong></li>
+      </ul>
+      <p class="invented">Nothing was sent. The bakery is invented, so no one will call.</p>
+      <button class="btn quiet" type="button" data-again>Start a new order</button>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initOrder } from "../lib/order";
+  initOrder(document.querySelector<HTMLElement>(".order"));
+</script>
+
+<style>
+  .order { padding: clamp(3.5rem, 8vw, 6rem) var(--gutter); border-top: 2.5px solid var(--ink); }
+  .wrap { max-width: 52rem; margin: 0 auto; }
+  h2 { font-size: clamp(2.6rem, 7vw, 5rem); }
+
+  .steps { list-style: none; padding: 0; margin: 1.8rem 0 2.6rem; display: grid; gap: 1.1rem; }
+  .steps li { display: grid; grid-template-columns: 2.6rem 1fr; gap: 1rem; align-items: start; }
+  .n {
+    display: grid; place-items: center; width: 2.6rem; height: 2.6rem; border-radius: 50%;
+    border: 2px solid var(--ink); background: var(--kraft-soft); font: 1.25rem/1 var(--display);
+  }
+  .steps p { padding-top: .35rem; }
+
+  .form, .done { background: #fffdf7; border: 2px solid var(--ink); border-radius: 14px; padding: clamp(1.2rem, 3vw, 2rem); box-shadow: 4px 4px 0 var(--ink); }
+  .invented { background: var(--kraft-soft); border-radius: 8px; padding: .7rem .9rem; font-size: .95rem; }
+  .form .invented { margin-bottom: 1.4rem; }
+  .grid { display: grid; gap: 1.1rem 1.2rem; grid-template-columns: 1fr 1fr; margin-bottom: 1.6rem; }
+  .wide { grid-column: 1 / -1; }
+  @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+  .field { display: grid; gap: .35rem; align-content: start; }
+  label { font-weight: 600; }
+  .opt { font-weight: 400; color: var(--ink-soft); font-size: .9rem; }
+  input, select {
+    font: inherit; color: var(--ink); background: #fff;
+    border: 2px solid var(--ink); border-radius: 8px; padding: .7rem .8rem; min-height: 3rem; width: 100%;
+  }
+  input:focus-visible, select:focus-visible { outline: 3px solid var(--raspberry); outline-offset: 1px; }
+  [aria-invalid="true"] { border-color: var(--raspberry-deep); background: #fff5f7; }
+  .hint { font-size: .9rem; color: var(--ink-soft); }
+  .err { font-size: .95rem; font-weight: 600; color: var(--raspberry-deep); }
+  .err:empty { display: none; }
+
+  .done h3 { font-size: clamp(1.8rem, 4vw, 2.6rem); margin-bottom: .8rem; }
+  .summary { margin: 1rem 0 1.4rem; padding-left: 1.2rem; display: grid; gap: .35rem; }
+  .done .invented { margin-bottom: 1.4rem; }
+</style>

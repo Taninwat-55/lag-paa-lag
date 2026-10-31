@@ -1,0 +1,17 @@
+---
+// Where the order form lands without JavaScript. Fields carry no names, so nothing arrives here.
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Order not sent · Lag på Lag" description="Lag på Lag is an invented bakery. Orders are never sent.">
+  <main class="sent">
+    <h1>Nothing was sent.</h1>
+    <p>Lag på Lag is an invented bakery, made as a design sample. The order form works in your browser but never sends your details. This page received none of them.</p>
+    <a class="btn" href="/">Back to the cakes</a>
+  </main>
+</Base>
+
+<style>
+  .sent { max-width: 40rem; margin: 0 auto; padding: clamp(4rem, 12vw, 8rem) var(--gutter); display: grid; gap: 1.2rem; justify-items: start; }
+  h1 { font-size: clamp(2.6rem, 8vw, 4.5rem); }
+</style>

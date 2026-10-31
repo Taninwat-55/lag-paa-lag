@@ -1,0 +1,41 @@
+---
+import type { Settings } from "../lib/sanity";
+interface Props { hours: Settings["hours"] }
+const { hours } = Astro.props;
+---
+
+<section class="visit" id="visit" aria-labelledby="visit-title">
+  <div class="wrap">
+    <div>
+      <h2 id="visit-title">Visit</h2>
+      <p class="where">Amagerbrogade, Copenhagen S.<br />A few minutes from Amagerbro metro.</p>
+      <p class="note">Come in to collect your cake, or to taste the sponge before you choose. There’s always a plate of offcuts on the counter.</p>
+    </div>
+    {hours.length > 0 && (
+      <table class="hours">
+        <caption>Opening hours</caption>
+        <tbody>
+          {hours.map(h => <tr><th scope="row">{h.days}</th><td>{h.time}</td></tr>)}
+        </tbody>
+      </table>
+    )}
+  </div>
+</section>
+
+<style>
+  .visit { padding: clamp(3.5rem, 8vw, 6rem) var(--gutter); background: var(--kraft); border-top: 2.5px solid var(--ink); }
+  .wrap { max-width: 76rem; margin: 0 auto; display: grid; gap: 2.5rem; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); align-items: start; }
+  h2 { font-size: clamp(2.6rem, 7vw, 5rem); }
+  .where { font: clamp(1.4rem, 3vw, 1.9rem)/1.2 var(--display); margin-top: 1rem; }
+  .note { margin-top: 1rem; max-width: 30rem; }
+  .hours {
+    border-collapse: collapse; width: 100%; max-width: 26rem; justify-self: end;
+    background: #fffdf7; border: 2px solid var(--ink); border-radius: 14px; box-shadow: 4px 4px 0 var(--ink);
+    font-variant-numeric: tabular-nums; overflow: hidden;
+  }
+  caption { text-align: left; font: 1.5rem/1 var(--display); padding: 0 0 .9rem; }
+  th, td { padding: .85rem 1.2rem; text-align: left; }
+  tr + tr :is(th, td) { border-top: 2px dashed var(--kraft); }
+  td { text-align: right; font-weight: 600; }
+  @media (max-width: 640px) { .hours { justify-self: stretch; } }
+</style>
